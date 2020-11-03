@@ -4,7 +4,7 @@ var gameState = PLAY;
 
 var sofia, sofai, cup, edges, playS, death;
 var wall1, wall2, wall3, wall4, wall5, wall6, wall7, wall8,
-  wall9, wall10, wall11, wall12, wall13, wall14, wall15, wall16, wall17, wall18, wall19, wall20, wall21, wall22, wallsGroup;
+  wall9, wall10, wall11, wall12, wall13, wall14, wall15, wall16, wall17, wall18, wall19, wall20, wall21, wall22, wallsGroup,ri,r;
 
 var monster1, monster2, monster3, monster4, mons1, mons2, mon3, mons4, monsGroup, grainsG;
 var grains, grains2, grains3, grains4, grains5, grains6, grains7, grains8, grains9, grains10, grains11, grains12 ,grains13, grains14, grains15, grains16, grains17, grains18, grains19;
@@ -20,6 +20,7 @@ function preload() {
   sofai = loadAnimation("pacman1.png", "pacc.png");
   playS = loadSound("PacmanSo.mp3");
   death = loadSound("pacD1.m4a");
+  ri=loadImage("reset.png");
 
 }
 
@@ -38,24 +39,25 @@ function setup() {
   cup = createSprite(0, 0, 30, 30);
   cup.shapeColor = "yellow";
 
+ createWalls();
+  createMonsters();createGrains();
+  createGrains();
 
-  createWalls();
-   createMonsters();
- createGrains();
-
-  
  
   edges = createEdgeSprites();
 
-   playS.play();
-   playS.setVolume(0.4);
-  playS.loop();
+playS.play();
+  playS.setVolume(0.2);
+playS.loop();
+  r=createSprite(300,300,10,10);
+  r.addImage("reset",ri);
+  r.visible=false;
 }
 
 function draw() {
-  if(gameState===PLAY){
-    
   background("blue");
+  if(gameState===PLAY){
+  
   textSize(15);
   stroke("white");
   fill("white");
@@ -66,26 +68,25 @@ function draw() {
    text("X" + mouseX + "Y" + mouseY, mouseX, mouseY);
 
 
+  
+   
+
   movements();
-  wallsGroup.setDepthEach(sofia.depth - 1);
-  grainsG.depth = wallsGroup.depth;
-  wallsGroup.depth = wallsGroup + 1;
 
 
-
-
+if(lives>0){
   if (monsGroup.isTouching(sofia) || wallsGroup.isTouching(sofia)) {
 
-    lives = lives - 1;
-    sofia.x = width-60;
-    sofia.y = height-40;
-  }
-
-  if (lives < 0) {
-    monsGroup.setVelocityEach(0, 0);
-  gameState=END;
-
+   lives=lives-1;
+    sofia.x = 540;
+    sofia.y = 560;
+    
   }}
+ else{
+   gameState=END;
+ }   
+
+ }
   
 
   sofia.bounceOff(edges);
@@ -108,17 +109,19 @@ function draw() {
 if(gameState===END){
      sofia.visible=false;
        cup.visible=false;
+      r.visible=true;
  
    monsGroup.destroyEach();
    wallsGroup.destroyEach();
     grainsG.destroyEach();
+
   fill("white");
   textSize(23);
      text("G A M E O V E R " ,200,200);
-    if(keyWentDown("R")){
+    if(mousePressedOver(r)){
       reset();
     }
-
+  
   }
   drawSprites();
 }
@@ -257,22 +260,22 @@ function movements(){
   sofia.velocityY = 0;
 
   if (keyDown("right")) {
-    sofia.velocityX = 10;
+    sofia.velocityX = 11;
     sofia.velocityY = 0;
 
  }
   if (keyDown("up")) {
-    sofia.velocityY = -10;
+    sofia.velocityY = -11;
     sofia.velocityX = 0;
   }
 
   if (keyDown("down")) {
     sofia.velocityX = 0;
-    sofia.velocityY = 10;
+    sofia.velocityY = 11;
   }
 
   if (keyDown("left")) {
-    sofia.velocityX = -10;
+    sofia.velocityX = -11;
     sofia.velocityY = 0;
   }
 }
@@ -333,7 +336,7 @@ function createGrains(){
      grains12.shapeColor="yellow";
     grainsG.add(grains12);
     
-    
+    grainsG.setDepthEach(wallsGroup.minDepth()-1);
   }
     
   
@@ -342,12 +345,20 @@ function createGrains(){
   
   }
 function reset(){
+  lives=4;
  sofia.visible=true;
   cup.visible=true;
+  
    createWalls();
   createMonsters();
   createGrains();
 
+  
+  
+  
+  r.visible=false;
+
 gameState=PLAY;
   
 }
+
