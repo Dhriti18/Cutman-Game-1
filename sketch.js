@@ -46,9 +46,9 @@ function setup() {
  
   edges = createEdgeSprites();
 
-playS.play();
-  playS.setVolume(0.2);
-playS.loop();
+//playS.play();
+  //playS.setVolume(0.2);
+///playS.loop();
   r=createSprite(300,300,10,10);
   r.addImage("reset",ri);
   r.visible=false;
@@ -353,7 +353,9 @@ function reset(){
   createMonsters();
   createGrains();
 
-  
+  playS.play();
+  playS.setVolume(0.2);
+  playS.loop():
   
   
   r.visible=false;
